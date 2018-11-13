@@ -25,12 +25,12 @@ module RailsViewAnnotator
       if inner.present?
         comment_pattern = "%{partial}"
         template_formats = extract_requested_formats_from(context)
-        if template_formats.include?(:text) # Do not render any comments for raw plaintext repsonses
-          return inner
-        elsif template_formats.include?(:js)
+        if template_formats == [:js]
           comment_pattern = "/* begin: %{comment} */\n#{comment_pattern}/* end: %{comment} */"
-        elsif template_formats.empty? || template_formats.include?(:html)
+        elsif template_formats == [:html]
           comment_pattern = "<!-- begin: %{comment} -->\n#{comment_pattern}<!-- end: %{comment} -->"
+        else
+          return inner # Do not render any comments for responses we do not support
         end
 
         (comment_pattern % {:partial => inner, :comment => descriptor}).html_safe
