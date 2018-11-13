@@ -26,9 +26,9 @@ module RailsViewAnnotator
 
       case extract_requested_formats_from(context)
       when [:js]
-        "/* begin: %{descriptor} */\n%{inner}/* end: %{descriptor} */"
+        "/* begin: #{descriptor} */\n#{inner}/* end: #{descriptor} */"
       when [:html]
-        "<!-- begin: %{descriptor} -->\n%{inner}<!-- end: %{descriptor} -->".html_safe
+        "<!-- begin: #{descriptor} -->\n#{inner}<!-- end: #{descriptor} -->".html_safe
       else
         inner
       end
