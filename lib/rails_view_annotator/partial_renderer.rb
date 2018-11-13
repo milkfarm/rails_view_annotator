@@ -22,15 +22,15 @@ module RailsViewAnnotator
 
       descriptor = "#{short_identifier} (from #{called_from})"
 
-      if inner.present?
-        case extract_requested_formats_from(context)
-        when [:js]
-          "/* begin: %{descriptor} */\n%{inner}/* end: %{descriptor} */"
-        when [:html]
-          "<!-- begin: %{descriptor} -->\n%{inner}<!-- end: %{descriptor} -->"
-        else
-          inner
-        end
+      return if inner.blank?
+
+      case extract_requested_formats_from(context)
+      when [:js]
+        "/* begin: %{descriptor} */\n%{inner}/* end: %{descriptor} */"
+      when [:html]
+        "<!-- begin: %{descriptor} -->\n%{inner}<!-- end: %{descriptor} -->".html_safe
+      else
+        inner
       end
     end
 
