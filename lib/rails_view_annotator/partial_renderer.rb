@@ -30,7 +30,7 @@ module RailsViewAnnotator
       when [:html]
         "<!-- begin: #{descriptor} -->\n#{inner}<!-- end: #{descriptor} -->".html_safe
       else
-        inner
+        inner.force_encoding('UTF-8')
       end
     end
 
