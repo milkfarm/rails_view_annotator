@@ -10,10 +10,10 @@ module RailsViewAnnotator
 
     def render(context, options, block)
       inner = super
+      return if inner.blank?
+
       identifier = template_identifier
-
       return unless identifier
-
       short_identifier = Pathname.new(identifier).relative_path_from Rails.root
 
       r = /^#{Regexp.escape(Rails.root.to_s)}\/([^:]+:\d+)/
@@ -22,15 +22,13 @@ module RailsViewAnnotator
 
       descriptor = "#{short_identifier} (from #{called_from})"
 
-      return if inner.blank?
-
       case extract_requested_formats_from(context)
       when [:js]
         "/* begin: #{descriptor} */\n#{inner}/* end: #{descriptor} */"
       when [:html]
         "<!-- begin: #{descriptor} -->\n#{inner}<!-- end: #{descriptor} -->".html_safe
       else
-        inner.force_encoding('UTF-8')
+        inner.encode('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
       end
     end
 
