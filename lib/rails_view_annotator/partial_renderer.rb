@@ -23,17 +23,14 @@ module RailsViewAnnotator
       descriptor = "#{short_identifier} (from #{called_from})"
 
       if inner.present?
-        comment_pattern = "%{partial}"
-        template_formats = extract_requested_formats_from(context)
-        if template_formats == [:js]
-          comment_pattern = "/* begin: %{comment} */\n#{comment_pattern}/* end: %{comment} */"
-        elsif template_formats == [:html]
-          comment_pattern = "<!-- begin: %{comment} -->\n#{comment_pattern}<!-- end: %{comment} -->"
+        case extract_requested_formats_from(context)
+        when [:js]
+          "/* begin: %{descriptor} */\n%{inner}/* end: %{descriptor} */"
+        when [:html]
+          "<!-- begin: %{descriptor} -->\n%{inner}<!-- end: %{descriptor} -->"
         else
-          return inner # Do not render any comments for responses we do not support
+          inner
         end
-
-        (comment_pattern % {:partial => inner, :comment => descriptor}).html_safe
       end
     end
 
