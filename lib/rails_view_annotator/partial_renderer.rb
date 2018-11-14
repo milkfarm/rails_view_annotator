@@ -28,7 +28,7 @@ module RailsViewAnnotator
       when [:html]
         "<!-- begin: #{descriptor} -->\n#{inner}<!-- end: #{descriptor} -->".html_safe
       else
-        inner.encode('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
+        to_utf8(inner)
       end
     end
 
@@ -37,5 +37,12 @@ module RailsViewAnnotator
     def template_identifier
       (@template = find_partial) ? @template.identifier : @path
     end
+
+    def to_utf8(str)
+      str = str.force_encoding('UTF-8')
+      return str if str.valid_encoding?
+      str.encode('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
+    end
+
   end
 end
